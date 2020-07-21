@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        Firstname: {{ user.firstname }}<br />
+        Lastname: {{ user.lastname }}<br />
+        <br />
+        Translation test: {{ $t.test }}
+        <br />
+        Function test: {{helloWorld 'test'}}
+
+        <img src="img.jpg" width="100px" height="100px" />
+
+         <table style="width:100%">
+             <tr>
+                <th>Id</th>
+                <th>Course</th>
+                <th>Grade</th>
+            </tr>
+            {{#each courses}}
+            <tr>
+                <th>{{ this.id }}</th>
+                <th>{{ this.name }}</th>
+                <th>{{ this.grade }}</th>
+            </tr>
+            {{/each}}
+        </table> 
+    </body>
+</html>
