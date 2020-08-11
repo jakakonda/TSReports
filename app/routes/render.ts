@@ -5,6 +5,7 @@ import { getRenderer } from '../renderers/Renderer';
 import { getPdfExporter } from '../exporters/PdfExporter';
 import { loadTranslations } from '../utils/translations';
 import { IReportRequest } from '../data/ReportRequest';
+import { Stream } from 'stream';
 
 const router = express.Router();
 
@@ -12,8 +13,8 @@ function getTplPath(tpl: string) {
     return path.join(path.dirname(require?.main?.filename), '..', process?.env?.templates_dir, tpl);
 }
 
-async function render(tpl: string|null, data: IReportRequest, res: express.Response) {
-    tpl = data.template && data.template.name || tpl;
+async function render(data: IReportRequest, res: express.Response) {
+    const tpl = data.template.name;
     if (!tpl) {
         res.status(404).send();
         return;
@@ -36,8 +37,14 @@ async function render(tpl: string|null, data: IReportRequest, res: express.Respo
         });
         
         const exporter =  getPdfExporter('phantom');
-        const stream = await exporter.render(html, {});
-        stream.pipe(res);
+
+        if (data.template.type == 'html') {
+            res.send(html);
+        }
+        else {
+            const stream = await exporter.render(html, {});
+            stream.pipe(res);
+        }
     } catch(e) {
         console.error(e);
         res.status(500).send();
@@ -57,15 +64,21 @@ router.get('/', async (req, res, next) => {
         return;
     }
 
-    const data = {
-        data: require(demoDataPath)
+    const data: IReportRequest = {
+        data: require(demoDataPath),
+        template: {
+            name: tpl,
+            language: <string>req.query.lang,
+            type: <string>req.query.type,
+        }
     };
+    console.log(data);
 
-    await render(tpl, <IReportRequest>data, res);
+    await render(data, res);
 });
 
 router.post('/', async (req, res, next) => {
-    await render(null, <IReportRequest>req.body, res);
+    await render(<IReportRequest>req.body, res);
 });
 
 export default router;

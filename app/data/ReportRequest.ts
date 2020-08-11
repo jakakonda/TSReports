@@ -1,6 +1,7 @@
 export interface ITemplate {
-    name: string|null,
-    language: string
+    name: string,
+    language?: string,
+    type?: string,
 }
 
 export interface IOptions {
@@ -8,7 +9,7 @@ export interface IOptions {
 }
 
 export interface IReportRequest {
-    template: ITemplate,
-    options: IOptions|null;
+    template?: ITemplate,
+    options?: IOptions;
     data: null|object;
 }
