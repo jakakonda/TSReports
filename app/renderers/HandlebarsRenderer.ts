@@ -13,7 +13,7 @@ export class HandlebarsRender implements IRenderer {
             const source = fs.readFileSync(path.join(directory, 'index.hbs'), 'utf8');
             const template = handlebars.compile(source);
             let html = template(data);   
-            html = embedFiles(html, directory);
+            // html = embedFiles(html, directory);
             
             resolve(html);
         });

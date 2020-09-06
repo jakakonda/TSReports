@@ -42,7 +42,7 @@ async function render(data: IReportRequest, res: express.Response) {
             res.send(html);
         }
         else {
-            const stream = await exporter.render(html, {});
+            const stream = await exporter.render(html, tplPath, {});
             stream.pipe(res);
         }
     } catch(e) {
@@ -78,6 +78,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
+    console.log(JSON.stringify(req.body));
     await render(<IReportRequest>req.body, res);
 });
 
