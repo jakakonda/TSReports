@@ -4,6 +4,7 @@ require('dotenv').config();
 
 // Create a new express application instance
 const app: express.Application = express();
+app.use('/templates', express.static(process?.env?.templates_dir))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));

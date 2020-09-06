@@ -6,6 +6,7 @@ import { getPdfExporter } from '../exporters/PdfExporter';
 import { loadTranslations } from '../utils/translations';
 import { IReportRequest } from '../data/ReportRequest';
 import { Stream } from 'stream';
+import { getExporter } from '../exporters';
 
 const router = express.Router();
 
@@ -36,15 +37,9 @@ async function render(data: IReportRequest, res: express.Response) {
             ...data.data
         });
         
-        const exporter =  getPdfExporter('phantom');
-
-        if (data.template.type == 'html') {
-            res.send(html);
-        }
-        else {
-            const stream = await exporter.render(html, tplPath, {});
-            stream.pipe(res);
-        }
+        const exporter = getExporter(data.template.type, undefined);
+        const stream = await exporter.render(html, tplPath, {});
+        stream.pipe(res);
     } catch(e) {
         console.error(e);
         res.status(500).send();
@@ -72,13 +67,11 @@ router.get('/', async (req, res, next) => {
             type: <string>req.query.type,
         }
     };
-    console.log(data);
 
     await render(data, res);
 });
 
 router.post('/', async (req, res, next) => {
-    console.log(JSON.stringify(req.body));
     await render(<IReportRequest>req.body, res);
 });
 
