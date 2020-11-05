@@ -2,15 +2,16 @@ import * as express from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getRenderer } from '../renderers/Renderer';
-import { getPdfExporter } from '../exporters/PdfExporter';
 import { loadTranslations } from '../utils/translations';
 import { IReportRequest } from '../data/ReportRequest';
-import { Stream } from 'stream';
 import { getExporter } from '../exporters';
 
 const router = express.Router();
 
 function getTplPath(tpl: string) {
+    const dir =  process?.env?.templates_dir;
+    if (dir && dir.startsWith('\\\\'))
+        return path.join( process?.env?.templates_dir, tpl);
     return path.join(path.dirname(require?.main?.filename), '..', process?.env?.templates_dir, tpl);
 }
 
@@ -22,7 +23,7 @@ async function render(data: IReportRequest, res: express.Response) {
     }
 
     // Check if template exists
-    const tplPath = path.join(path.dirname(require?.main?.filename), '..', process?.env?.templates_dir, tpl);
+    const tplPath = getTplPath(tpl);
     if (!fs.existsSync(tplPath)) {
         res.status(404).send();
         return;
@@ -37,7 +38,7 @@ async function render(data: IReportRequest, res: express.Response) {
             ...data.data
         });
         
-        const exporter = getExporter(data.template.type, undefined);
+        const exporter = getExporter(data.template.type || 'pdf', undefined);
         const stream = await exporter.render(html, tplPath, {});
         stream.pipe(res);
     } catch(e) {
