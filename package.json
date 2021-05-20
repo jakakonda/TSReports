@@ -9,7 +9,7 @@
     "express": "^4.17.1",
     "file-url": "^3.0.0",
     "handlebars": "4.7.7",
-    "html-pdf": "^2.2.0",
+    "html-pdf": "^3.0.1",
     "jsdom": "^16.3.0",
     "morgan": "~1.9.1"
   },
