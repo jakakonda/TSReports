@@ -6,7 +6,7 @@
   "description": "Lightweight web server to generate PDF reports.",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "file-url": "^3.0.0",
     "handlebars": "4.7.7",
     "html-pdf": "^2.2.0",
